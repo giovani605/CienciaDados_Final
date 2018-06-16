@@ -5,7 +5,7 @@ import csv
 fields = ['summonerId','accountId','tier','rank']
 
 
-tabela = open('dados2.csv','w')
+tabela = open('listPlayers.csv','w')
 csv_writer = csv.DictWriter(tabela, fieldnames=fields, delimiter=',')
 csv_writer.writeheader()
 # Dicionario que guarda os players que eu ja dd no csv
@@ -43,13 +43,14 @@ watcher = riotwatcher.RiotWatcher(key)
 ## criar uma lista com os jogadores que vai comecar
 players = open("playersStart.txt")
 ## parametros
-partidasPorPlayer = 2
+partidasPorPlayer = 10
 regiao = "br1"
+
 
 for idSum in players.readlines():
     idSum = idSum.strip()
     print(idSum)
-    partidas = watcher.match.matchlist_by_account(region=regiao,account_id=idSum)
+    partidas = watcher.match.matchlist_by_account(region=regiao,account_id=idSum,queue=420)
     cont = 0
     for match in partidas["matches"]:
         if cont == partidasPorPlayer:
