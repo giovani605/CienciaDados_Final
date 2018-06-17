@@ -43,13 +43,15 @@ watcher = riotwatcher.RiotWatcher(key)
 ## criar uma lista com os jogadores que vai comecar
 players = open("playersStart.txt")
 ## parametros
-partidasPorPlayer = 10
+partidasPorPlayer = 5
 regiao = "br1"
 
 
-for idSum in players.readlines():
-    idSum = idSum.strip()
-    print(idSum)
+for nome in players.readlines():
+    nome = nome.strip()
+    playerDados = watcher.summoner.by_name(region=regiao,summoner_name=nome)
+    print(playerDados)
+    idSum = playerDados["accountId"]
     partidas = watcher.match.matchlist_by_account(region=regiao,account_id=idSum,queue=420)
     cont = 0
     for match in partidas["matches"]:
