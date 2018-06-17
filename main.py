@@ -3,6 +3,7 @@ from http.client import HTTPException
 import riotwatcher
 import csv
 import time
+import pickle
 
 fields = ['accountId','matchId','visionScore']
 
@@ -53,6 +54,15 @@ for player in csv_reader:
             else:
                 cont += 1
             partida = watcher.match.by_id(region=regiao, match_id=match["gameId"])
+            try:
+                arquivo = open(str("dados/"+str(match["gameId"])+".pkl"), 'wb')
+            except:
+                arquivo = open(str("dados/" + str(match["gameId"]+".pkl")), 'wb+')
+            finally:
+                pickle.dump(partida, arquivo)
+                arquivo.close()
+
+
             for participante in partida["participantIdentities"]:
                     teste = participante["player"]
                     if str(participante["player"]["summonerId"]) == idSum or str(participante["player"]["accountId"]) == idConta:
@@ -60,8 +70,8 @@ for player in csv_reader:
                         for dados in partida["participants"]:
                             if dados["participantId"] is participanteId:
                                 processar(dados=dados, accountId=idSum, matchId=match["gameId"])
-    except:
-        print("erro")
+    except Exception as e:
+        print(e)
 
 print("terminei em ")
 print(time.asctime(time.localtime(time.time())))
