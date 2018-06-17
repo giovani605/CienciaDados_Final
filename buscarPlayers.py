@@ -46,30 +46,32 @@ players = open("playersStart.txt")
 partidasPorPlayer = 5
 regiao = "br1"
 
-
 for nome in players.readlines():
     nome = nome.strip()
     playerDados = watcher.summoner.by_name(region=regiao,summoner_name=nome)
     print(playerDados)
     idSum = playerDados["accountId"]
-    partidas = watcher.match.matchlist_by_account(region=regiao,account_id=idSum,queue=420)
-    cont = 0
-    for match in partidas["matches"]:
-        if cont == partidasPorPlayer:
-            break
-        else:
-            cont += 1
-        partida = watcher.match.by_id(region=regiao, match_id=match["gameId"])
-        for participante in partida["participantIdentities"]:
-                IdSummoner = participante['player']['summonerId']
-                IdAccount = participante['player']['accountId']
-                ranked = watcher.league.positions_by_summoner(region=regiao,summoner_id=IdSummoner)
-                print(ranked)
-                for a in ranked:
-                    if a["queueType"] == 'RANKED_SOLO_5x5':
-                        tier = a["tier"]
-                        rank = a["rank"]
-                        salvarPlayer(IdSummoner,IdAccount,tier,rank)
+    try:
+        partidas = watcher.match.matchlist_by_account(region=regiao,account_id=idSum,queue=420)
+        cont = 0
+        for match in partidas["matches"]:
+            if cont == partidasPorPlayer:
+                break
+            else:
+                cont += 1
+            partida = watcher.match.by_id(region=regiao, match_id=match["gameId"])
+            for participante in partida["participantIdentities"]:
+                    IdSummoner = participante['player']['summonerId']
+                    IdAccount = participante['player']['accountId']
+                    ranked = watcher.league.positions_by_summoner(region=regiao,summoner_id=IdSummoner)
+                    print(ranked)
+                    for a in ranked:
+                        if a["queueType"] == 'RANKED_SOLO_5x5':
+                            tier = a["tier"]
+                            rank = a["rank"]
+                            salvarPlayer(IdSummoner,IdAccount,tier,rank)
+    except:
+        print("erro")
 
          #       if participante["player"]["summonerId"] == idSum:
           #          participanteId = participante["participantId"]

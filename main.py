@@ -55,10 +55,11 @@ for player in csv_reader:
                 cont += 1
             partida = watcher.match.by_id(region=regiao, match_id=match["gameId"])
             try:
-                arquivo = open(str("dados/"+str(match["gameId"])+".pkl"), 'wb')
+                arquivo = open(str("dados/" + str(match["gameId"])+".pkl"), 'wb')
+                pickle.dump(partida, arquivo)
+                arquivo.close()
             except:
-                arquivo = open(str("dados/" + str(match["gameId"]+".pkl")), 'wb+')
-            finally:
+                arquivo = open(str("dados/" + str(match["gameId"])+".pkl"), 'wb+')
                 pickle.dump(partida, arquivo)
                 arquivo.close()
 
