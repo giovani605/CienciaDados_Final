@@ -22,9 +22,15 @@ def procurarRank(contaId):
 for match in csv_reader:
     ## carregar o dado do match inteiro
     arquivo = open("dados/"+str(match["matchId"])+".pkl", 'rb')
-    dict = pickle.load(arquivo)
+    partida = pickle.load(arquivo)
     ## a variavel dict eh aquele json match
     ## o match account id eh na vdd o summoner id
     rank = procurarRank(match["accountId"])
-    print(rank)
-    print(dict)
+    for participante in partida["participantIdentities"]:
+        teste = participante["player"]
+        if str(participante["player"]["summonerId"]) == match["accountId"]:
+            participanteId = participante["participantId"]
+            for dados in partida["participants"]:
+                if dados["participantId"] is participanteId:
+                    ## chegamos nos dados do nosso alvo
+                    print("cheguei")
