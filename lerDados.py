@@ -19,6 +19,7 @@ def procurarRank(contaId):
 
 # adicionar aqui os fields que vao para o csv
 fields = ['summonerId','accountId','tier','rank','matchId','win','visionScore','role']
+contador = 0
 tabela = open('saida.csv', 'w')
 csv_writer = csv.DictWriter(tabela, fieldnames=fields, delimiter=',')
 csv_writer.writeheader()
@@ -38,7 +39,8 @@ def processar(player,matchId,win,visionScore,lane,role):
 
     ## a role eh decidida
     if lane == "BOTTOM":
-        if role == "NONE":
+        if role == "NONE" or role == "DUO" or role == "SOLO":
+            print("problema")
             return
         if role == "DUO_CARRY":
             linha[fields[7]] = "CARRY"
@@ -50,8 +52,8 @@ def processar(player,matchId,win,visionScore,lane,role):
     if lane == "NONE":
         return
 
-    print("salvei")
-    print(linha)
+  #  print("salvei")
+   # print(linha)
     csv_writer.writerow(linha)
 
 for match in csv_partidas:
@@ -67,6 +69,7 @@ for match in csv_partidas:
             participanteId = participante["participantId"]
             for dados in partida["participants"]:
                 if dados["participantId"] is participanteId:
-                    print(dados["timeline"])
+                   # print(dados["timeline"])
                     processar(playerRank, match["matchId"], dados["stats"]["win"], dados["stats"]["visionScore"],dados["timeline"]["lane"],dados["timeline"]["role"])
-                    print("cheguei")
+                    #print("cheguei")
+
