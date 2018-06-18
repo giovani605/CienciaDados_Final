@@ -18,7 +18,7 @@ def procurarRank(contaId):
     print("nao encontrei")
 
 # adicionar aqui os fields que vao para o csv
-fields = ['summonerId','accountId','tier','rank','matchId','win','visionScore','role']
+fields = ['summonerId','accountId','tier','rank','matchId','win','visionScore','role','minion']
 contador = 0
 tabela = open('saida.csv', 'w')
 csv_writer = csv.DictWriter(tabela, fieldnames=fields, delimiter=',')
@@ -26,7 +26,7 @@ csv_writer.writeheader()
 
 
 
-def processar(player,matchId,win,visionScore,lane,role):
+def processar(player,matchId,win,visionScore,lane,role,minion):
     ## chegando aqui cosnegui pogar o stat do meu player
     linha = {}
     linha[fields[0]] = player['summonerId']
@@ -36,6 +36,7 @@ def processar(player,matchId,win,visionScore,lane,role):
     linha[fields[4]] = matchId
     linha[fields[5]] = win
     linha[fields[6]] = visionScore
+
 
     ## a role eh decidida
     if lane == "BOTTOM":
@@ -51,7 +52,7 @@ def processar(player,matchId,win,visionScore,lane,role):
         linha[fields[7]] = lane
     if lane == "NONE":
         return
-
+    linha[fields[8]] = minion
   #  print("salvei")
    # print(linha)
     csv_writer.writerow(linha)
@@ -69,7 +70,10 @@ for match in csv_partidas:
             participanteId = participante["participantId"]
             for dados in partida["participants"]:
                 if dados["participantId"] is participanteId:
-                   # print(dados["timeline"])
-                    processar(playerRank, match["matchId"], dados["stats"]["win"], dados["stats"]["visionScore"],dados["timeline"]["lane"],dados["timeline"]["role"])
+                    print(dados)
+                    print(partida)
+                    minionsMortos = float(float(dados["stats"]["totalMinionsKilled"]) / (float(partida["gameDuration"]) /60))
+
+                    processar(playerRank, match["matchId"], dados["stats"]["win"], dados["stats"]["visionScore"],dados["timeline"]["lane"],dados["timeline"]["role"],minionsMortos)
                     #print("cheguei")
 
