@@ -1,15 +1,17 @@
 import matplotlib.pyplot as plt
 import csv
 
+#le arquivos
 saida = open("saida.csv", 'r')
 csv_saida = csv.DictReader(saida)
 
-# visionScore para cada elo
+# inicia dict
 carry = {'BRONZE': 0, 'SILVER': 0, 'GOLD': 0, 'PLATINUM': 0, 'DIAMOND': 0, 'MASTER': 0, 'CHALLENGER': 0}
 mid = {'BRONZE': 0, 'SILVER': 0, 'GOLD': 0, 'PLATINUM': 0, 'DIAMOND': 0, 'MASTER': 0, 'CHALLENGER': 0}
 top = {'BRONZE': 0, 'SILVER': 0, 'GOLD': 0, 'PLATINUM': 0, 'DIAMOND': 0, 'MASTER': 0, 'CHALLENGER': 0}
 jungle = {'BRONZE': 0, 'SILVER': 0, 'GOLD': 0, 'PLATINUM': 0, 'DIAMOND': 0, 'MASTER': 0, 'CHALLENGER': 0}
 sup = {'BRONZE': 0, 'SILVER': 0, 'GOLD': 0, 'PLATINUM': 0, 'DIAMOND': 0, 'MASTER': 0, 'CHALLENGER': 0}
+#inicia valores das médias
 bc = 0
 sc = 0
 gc = 0
@@ -45,6 +47,7 @@ pt = 0
 dt = 0
 mt = 0
 ct = 0
+# para cada linha do csv soma se a lane e rank correspondem
 for stats in csv_saida:
     if stats['role'] == 'CARRY':
         a = carry.get(stats['tier'])
@@ -162,6 +165,7 @@ for stats in csv_saida:
             ct += 1
             top['CHALLENGER'] = a + float(stats['visionScore'])
 
+# faz a média de cada role e rank
 carry['BRONZE'] = carry.get('BRONZE')/bc
 carry['SILVER'] = carry.get('SILVER')/sc
 carry['GOLD'] = carry.get('GOLD')/gc
@@ -202,15 +206,23 @@ top['DIAMOND'] = top.get('DIAMOND')/dt
 top['MASTER'] = top.get('MASTER')/mt
 top['CHALLENGER'] = top.get('CHALLENGER')/ct
 
+# cria subplots
 fig, ax = plt.subplots()
+# as keys e os values e a label de cada grafico
 ax.plot(sup.keys(), sup.values(), label='Support')
 ax.plot(carry.keys(), carry.values(), label='Carry')
 ax.plot(mid.keys(), mid.values(), label='Mid')
 ax.plot(jungle.keys(), jungle.values(), label='Jungle')
 ax.plot(top.keys(), top.values(), label='Top')
+# legenda do grafico
 ax.legend(loc=0, shadow=True, fontsize='x-large')
+# label do eixo x
 plt.xlabel('Rank')
+# label do eixo y
 plt.ylabel('Vision score')
+# titulo do grafico
 plt.title('Average vision score per role per rank')
+# salva
 plt.savefig('visionScore_position_rank.png')
+# mostra
 plt.show()
