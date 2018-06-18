@@ -18,15 +18,35 @@ def procurarRank(contaId):
     print("nao encontrei")
 
 # adicionar aqui os fields que vao para o csv
-fields = ['summonerId','accountId','tier','rank','matchId','win','visionScore','role','minion']
+fields = ['summonerId','accountId','tier','rank','matchId','win','visionScore','role','minion','kdRatio','ordem']
 contador = 0
 tabela = open('saida.csv', 'w')
 csv_writer = csv.DictWriter(tabela, fieldnames=fields, delimiter=',')
 csv_writer.writeheader()
 
+def getOrdem(tier):
+    if tier == "BRONZE":
+        return 1
 
+    if tier == "SILVER":
+        return 2
 
-def processar(player,matchId,win,visionScore,lane,role,minion):
+    if tier == "GOLD":
+        return 3
+
+    if tier == "PLATINUM":
+        return 4
+
+    if tier == "DIAMOND":
+        return 5
+
+    if tier == "MASTER":
+        return 6
+
+    if tier == "CHALLENGER":
+        return 7
+
+def processar(player,matchId,win,visionScore,lane,role,minion,kdRatio):
     ## chegando aqui cosnegui pogar o stat do meu player
     linha = {}
     linha[fields[0]] = player['summonerId']
@@ -53,6 +73,9 @@ def processar(player,matchId,win,visionScore,lane,role,minion):
     if lane == "NONE":
         return
     linha[fields[8]] = minion
+    print(kdRatio)
+    linha[fields[9]] = kdRatio
+    linha[fields[10]] = getOrdem(player['tier'])
   #  print("salvei")
    # print(linha)
     csv_writer.writerow(linha)
@@ -70,10 +93,17 @@ for match in csv_partidas:
             participanteId = participante["participantId"]
             for dados in partida["participants"]:
                 if dados["participantId"] is participanteId:
-                    print(dados)
-                    print(partida)
+                   # print(dados)
+                    #print(partida)
                     minionsMortos = float(float(dados["stats"]["totalMinionsKilled"]) / (float(partida["gameDuration"]) /60))
+                    mortes = 1
+                    if dados["stats"]["deaths"] == 0:
+                        mortes = 1
+                    else:
+                        mortes = dados["stats"]["deaths"]
 
-                    processar(playerRank, match["matchId"], dados["stats"]["win"], dados["stats"]["visionScore"],dados["timeline"]["lane"],dados["timeline"]["role"],minionsMortos)
+                    kdRatio = float((dados["stats"]["kills"] +(dados["stats"]["assists"]/3)) / mortes)
+
+                    processar(playerRank, match["matchId"], dados["stats"]["win"], dados["stats"]["visionScore"],dados["timeline"]["lane"],dados["timeline"]["role"],minionsMortos, kdRatio)
                     #print("cheguei")
 
