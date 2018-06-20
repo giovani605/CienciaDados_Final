@@ -102,7 +102,7 @@ for match in csv_partidas:
                     else:
                         mortes = dados["stats"]["deaths"]
 
-                    kdRatio = float((dados["stats"]["kills"] +(dados["stats"]["assists"]/3)) / mortes)
+                    kdRatio = float((dados["stats"]["assists"]) / mortes)
 
                     processar(playerRank, match["matchId"], dados["stats"]["win"], dados["stats"]["visionScore"],dados["timeline"]["lane"],dados["timeline"]["role"],minionsMortos, kdRatio)
                     #print("cheguei")
